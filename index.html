@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Telegram WebApp</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://telegram.org/js/telegram-web-app.js?58"></script>
+</head>
+<body>
+  <div id="app">
+    <!-- Контент будет меняться здесь -->
+    <div id="content"></div>
+  </div>
+
+  <!-- Футер (статичный, но кнопки работают через JS) -->
+  <footer id="footer">
+  <nav>
+    <button class="nav-btn" data-page="home">
+      <i class="fas fa-home"></i>
+      <span>Главная</span>
+    </button>
+    <button class="nav-btn" data-page="about">
+      <i class="fas fa-user-friends"></i>
+      <span>Друзья</span>
+    </button>
+    <button class="nav-btn" data-page="lessons">
+      <i class="fas fa-book"></i>
+      <span>Уроки</span>
+    </button>
+    <button class="nav-btn" data-page="tasks">
+      <i class="fas fa-tasks"></i>
+      <span>Задания</span>
+    </button>
+    <button class="nav-btn" data-page="shop">
+      <i class="fas fa-wallet"></i>
+      <span>Кошелёк</span>
+    </button>
+  </nav>
+</footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
