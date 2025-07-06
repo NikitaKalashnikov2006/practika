@@ -105,4 +105,24 @@ window.addEventListener("popstate", (e) => {
 // Функция для добавления обработчиков элементов страницы
 function addPageHandlers() {
   // Здесь можно добавить обработчики для элементов конкретных страниц
+  const inviteBtn = document.getElementById('inviteFriend');
+  if (inviteBtn) {
+    inviteBtn.addEventListener('click', () => {
+      const tg = window.Telegram.WebApp;
+      tg.openTelegramLink(`https://t.me/${tg.initDataUnsafe.user.username}?start=ref_${tg.initDataUnsafe.user.id}`);
+    });
+  }
+
+  const copyBtn = document.getElementById('copyLink');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      const link = document.getElementById('referralLink').textContent;
+      navigator.clipboard.writeText(link).then(() => {
+        copyBtn.textContent = 'Скопировано!';
+        setTimeout(() => {
+          copyBtn.textContent = 'Копировать';
+        }, 2000);
+      });
+    });
+  }
 }
