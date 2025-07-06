@@ -117,32 +117,31 @@ function addPageHandlers() {
 
 // Функция для открытия диалога отправки приглашения
 function shareReferralLink() {
-  const tg = window.Telegram.WebApp;
-  
-  if (!tg) {
-    console.error('Telegram WebApp не инициализирован');
-    return;
-  }
-
-  const userId = tg.initDataUnsafe.user?.id || '0';
-  const botUsername = 'Business_shop_bot'; // Ваш username бота
-  
-  // Формируем специальную ссылку для выбора чата
-  const shareUrl = `https://t.me/${botUsername}?startattach=tg:to_chat&text=Присоединяйся%20к%20моему%20проекту!%20Вот%20ссылка:%20https://t.me/${botUsername}?start=ref_${userId}`;
-  
-  console.log('Share URL:', shareUrl);
-  
   try {
-    if (tg.openTelegramLink) {
-      // Открываем интерфейс выбора чата
-      tg.openTelegramLink(shareUrl);
-    } else {
-      // Fallback для старых версий
-      alert('Функция доступна только в Telegram. Используйте эту ссылку:\n' + shareUrl);
+    const tg = window.Telegram.WebApp;
+    
+    if (!tg?.openTelegramLink) {
+      throw new Error('Telegram WebApp API не доступен');
     }
+
+    const userId = tg.initDataUnsafe.user?.id || '0';
+    const botUsername = 'Business_shop_bot'; // Ваш бот
+    
+    // Формируем две разные ссылки:
+    const refLink = `https://t.me/${botUsername}?start=ref_${userId}`; // Реферальная ссылка
+    const shareText = `🚀 Присоединяйся к проекту! Перейди: ${refLink}`;
+    
+    // Специальная ссылка для выбора чата
+    const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(refLink)}&text=${encodeURIComponent(shareText)}`;
+    
+    console.log('Отправляем ссылку:', shareUrl); // Для отладки
+    
+    // Основной рабочий метод
+    tg.openTelegramLink(shareUrl);
+    
   } catch (error) {
-    console.error('Ошибка при открытии выбора чата:', error);
-    alert('Произошла ошибка. Пожалуйста, попробуйте позже.');
+    console.error('Ошибка:', error);
+    alert(`Скопируйте ссылку вручную:\nhttps://t.me/${botUsername}?start=ref_${userId}`);
   }
 }
 
