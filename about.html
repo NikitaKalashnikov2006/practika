@@ -9,24 +9,30 @@
         <div class="stat-value">0</div>
         <div class="stat-label">Друзей приглашено</div>
       </div>
+      <div class="stat-item">
+        <div class="stat-value">0</div>
+        <div class="stat-label">Общий доход</div>
+      </div>
     </div>
     
     <div class="referral-benefits">
       <div class="benefit-item">
+        <i class="fas fa-solid fa-comments-dollar"></i>
         Получай 10% от заработка друзей
       </div>
     </div>
     
     <button id="inviteFriend" class="invite-btn">
+        <i class=" fas fa-regular fa-user-plus"></i>
       Пригласить друга
     </button>
     
-    <div class="referral-link-container">
-      <div class="referral-link-title">Ваша реферальная ссылка:</div>
-      <div class="referral-link" id="referralLink">https://t.me/your_bot?start=ref12345</div>
-      <button id="copyLink" class="copy-btn">
-        Копировать
-      </button>
+    <div class="referrals-list">
+      <h3>Ваши рефералы</h3>
+      <div class="referrals-container" id="referralsContainer">
+        <!-- Список будет заполняться динамически -->
+        <div class="empty-list">Пока нет приглашённых друзей</div>
+      </div>
     </div>
   </div>
 </div>
