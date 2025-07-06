@@ -82,8 +82,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // Развертываем WebApp на весь экран
   tg.expand();
   
-  const initialPage = window.location.hash.substring(1) || "home";
-  loadPage(initialPage);
+  // Всегда загружаем главную страницу, независимо от хэша в URL
+  loadPage("home");
+  history.replaceState({ page: "home" }, "", "#home");
 
   // Обработчики для кнопок навигации
   document.querySelectorAll(".nav-btn").forEach(btn => {
