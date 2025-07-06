@@ -103,26 +103,90 @@ window.addEventListener("popstate", (e) => {
 });
 
 // Функция для добавления обработчиков элементов страницы
+// Функция для добавления обработчиков элементов страницы
 function addPageHandlers() {
-  // Здесь можно добавить обработчики для элементов конкретных страниц
+  // Обработчик кнопки "Пригласить друга"
   const inviteBtn = document.getElementById('inviteFriend');
   if (inviteBtn) {
-    inviteBtn.addEventListener('click', () => {
-      const tg = window.Telegram.WebApp;
-      tg.openTelegramLink(`https://t.me/${tg.initDataUnsafe.user.username}?start=ref_${tg.initDataUnsafe.user.id}`);
-    });
+    inviteBtn.addEventListener('click', shareReferralLink);
   }
 
-  const copyBtn = document.getElementById('copyLink');
-  if (copyBtn) {
-    copyBtn.addEventListener('click', () => {
-      const link = document.getElementById('referralLink').textContent;
-      navigator.clipboard.writeText(link).then(() => {
-        copyBtn.textContent = 'Скопировано!';
-        setTimeout(() => {
-          copyBtn.textContent = 'Копировать';
-        }, 2000);
-      });
+  // Загрузка списка рефералов
+  loadReferralsList();
+}
+
+// Функция для открытия диалога отправки приглашения
+function shareReferralLink() {
+  const tg = window.Telegram.WebApp;
+  const userId = tg.initDataUnsafe.user?.id || '0';
+  const botUsername = 'Business_shop_bot'; // Замените на реальный username бота
+  const appName = 'test'; // Замените на название вашего приложения
+  
+  const referralLink = `https://t.me/${botUsername}/${appName}?startapp=${userId}`;
+  const message = `Привет! Присоединяйся к ${appName} по моей ссылке и начни зарабатывать вместе со мной: ${referralLink}`;
+  
+  // Используем WebApp для отправки сообщения
+  if (tg.platform !== 'unknown') {
+    tg.shareMessage({
+      text: message,
+      url: referralLink
     });
+  } else {
+    // Для тестирования вне Telegram
+    alert(`Ссылка для приглашения: ${referralLink}\n\nСообщение: ${message}`);
+  }
+}
+
+// Функция для загрузки списка рефералов
+function loadReferralsList() {
+  const referralsContainer = document.getElementById('referralsContainer');
+  if (!referralsContainer) return;
+
+  // Здесь должен быть запрос к вашему бэкенду для получения списка рефералов
+  // Пример статических данных для демонстрации:
+  const referrals = [
+    { username: 'user1', profit: 15.50 },
+    { username: 'user2', profit: 8.20 },
+    { username: 'user3', profit: 3.75 },
+    { username: 'user4', profit: 3.75 },
+    { username: 'user5', profit: 3.75 },
+    { username: 'user6', profit: 3.75 },
+    { username: 'user7', profit: 3.75 },
+    { username: 'user8', profit: 3.75 },
+    { username: 'user9', profit: 3.75 }
+  ];
+
+  // Очищаем контейнер
+  referralsContainer.innerHTML = '';
+
+  if (referrals.length === 0) {
+    referralsContainer.innerHTML = '<div class="empty-list">Пока нет приглашённых друзей</div>';
+    return;
+  }
+
+  // Добавляем рефералов в список
+  referrals.forEach(ref => {
+    const referralItem = document.createElement('div');
+    referralItem.className = 'referral-item';
+    referralItem.innerHTML = `
+      <span class="referral-username">@${ref.username}</span>
+      <span class="referral-profit">+${ref.profit.toFixed(2)}</span>
+    `;
+    referralsContainer.appendChild(referralItem);
+  });
+
+  // Обновляем статистику
+  updateReferralStats(referrals);
+}
+
+// Функция для обновления статистики
+function updateReferralStats(referrals) {
+  const totalReferrals = referrals.length;
+  const totalProfit = referrals.reduce((sum, ref) => sum + ref.profit, 0);
+  
+  const statItems = document.querySelectorAll('.stat-item .stat-value');
+  if (statItems.length >= 2) {
+    statItems[0].textContent = totalReferrals;
+    statItems[1].textContent = totalProfit.toFixed(2);
   }
 }
