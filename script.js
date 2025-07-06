@@ -103,7 +103,6 @@ window.addEventListener("popstate", (e) => {
 });
 
 // Функция для добавления обработчиков элементов страницы
-// Функция для добавления обработчиков элементов страницы
 function addPageHandlers() {
   // Обработчик кнопки "Пригласить друга"
   const inviteBtn = document.getElementById('inviteFriend');
