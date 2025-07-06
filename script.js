@@ -103,6 +103,7 @@ window.addEventListener("popstate", (e) => {
 });
 
 // Функция для добавления обработчиков элементов страницы
+// Функция для добавления обработчиков элементов страницы
 function addPageHandlers() {
   // Обработчик кнопки "Пригласить друга"
   const inviteBtn = document.getElementById('inviteFriend');
@@ -117,22 +118,51 @@ function addPageHandlers() {
 // Функция для открытия диалога отправки приглашения
 function shareReferralLink() {
   const tg = window.Telegram.WebApp;
-  const userId = tg.initDataUnsafe.user?.id || '0';
-  const botUsername = 'Business_shop_bot'; // Замените на реальный username бота
-  const appName = 'test'; // Замените на название вашего приложения
   
-  const referralLink = `https://t.me/${botUsername}/${appName}?startapp=${userId}`;
-  const message = `Привет! Присоединяйся к ${appName} по моей ссылке и начни зарабатывать вместе со мной: ${referralLink}`;
+  // Проверяем инициализацию WebApp
+  if (!tg) {
+    console.error('Telegram WebApp не инициализирован');
+    alert('Ошибка: Telegram WebApp не инициализирован');
+    return;
+  }
+
+  // Проверяем данные пользователя
+  if (!tg.initDataUnsafe || !tg.initDataUnsafe.user) {
+    console.error('Данные пользователя не доступны');
+    alert('Ошибка: данные пользователя не доступны');
+    return;
+  }
+
+  const userId = tg.initDataUnsafe.user.id;
+  const botUsername = 'Business_shop_bot'; // Ваш бот
+  const appName = 'test'; // Название приложения
   
-  // Используем WebApp для отправки сообщения
-  if (tg.platform !== 'unknown') {
-    tg.shareMessage({
-      text: message,
-      url: referralLink
-    });
-  } else {
-    // Для тестирования вне Telegram
-    alert(`Ссылка для приглашения: ${referralLink}\n\nСообщение: ${message}`);
+  // Формируем правильную реферальную ссылку для Telegram
+  const referralLink = `https://t.me/${botUsername}?start=ref_${userId}`;
+  
+  const message = `🚀 Привет! Присоединяйся к моему проекту и начни зарабатывать!\n\nПерейди по ссылке: ${referralLink}`;
+  
+  console.log('Реферальная ссылка:', referralLink);
+  
+  try {
+    // Пытаемся использовать Telegram-специфичные методы
+    if (tg.isVersionAtLeast('6.0') && tg.shareMessage) {
+      tg.shareMessage({
+        text: message,
+        url: referralLink
+      });
+    } else if (tg.openTelegramLink) {
+      // Альтернативный метод для старых версий
+      const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent(message)}`;
+      tg.openTelegramLink(shareUrl);
+    } else {
+      // Если методы Telegram недоступны (например, в тестовой среде)
+      alert(`Ссылка для приглашения:\n${referralLink}\n\nСообщение:\n${message}`);
+      console.log('Telegram методы недоступны, показано fallback-сообщение');
+    }
+  } catch (error) {
+    console.error('Ошибка при отправке приглашения:', error);
+    alert('Произошла ошибка при отправке приглашения. Пожалуйста, попробуйте позже.');
   }
 }
 
