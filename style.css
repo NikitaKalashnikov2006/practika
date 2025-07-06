@@ -197,17 +197,12 @@ nav {
   top: 0;
   left: 0;
   right: 0;
-  bottom: 70px; /* Высота футера */
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
+  bottom: 70px;
+  overflow-y: auto;
 }
 
 .referral-content {
   padding: 15px;
-  overflow-y: auto;
-  height: 100%;
-  box-sizing: border-box;
 }
 
 .referral-header {
@@ -223,7 +218,7 @@ nav {
 
 .referral-stats {
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   margin: 20px 0;
 }
 
@@ -232,11 +227,12 @@ nav {
   background: rgba(103, 181, 35, 0.2);
   border-radius: 10px;
   padding: 15px;
-  width: 25%;
+  width: 43%;
+  margin:1% ;
 }
 
 .stat-value {
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   font-weight: bold;
   color: rgb(103, 181, 35);
 }
@@ -251,12 +247,11 @@ nav {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
   padding: 15px;
+  text-align: center;
 }
 
 .benefit-item {
-  margin: 10px 0;
   font-size: 0.95rem;
-  text-align: center;
 }
 
 .invite-btn {
@@ -272,35 +267,45 @@ nav {
   cursor: pointer;
 }
 
-.referral-link-container {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  padding: 15px;
-  margin: 31px 0;
+.referrals-list {
+  margin-top: 20px;
 }
 
-.referral-link-title {
-  font-size: 0.9rem;
-  color: #aaa;
-  margin-bottom: 10px;
-}
-
-.referral-link {
-  word-break: break-all;
-  background: rgba(0, 0, 0, 0.3);
-  padding: 10px;
-  border-radius: 5px;
+.referrals-list h3 {
+  color: white;
   margin-bottom: 15px;
-  font-size: 0.9rem;
+  text-align: center;
 }
 
-.copy-btn {
-  background: rgba(103, 181, 35, 0.2);
+.referrals-container {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.referral-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.referral-item:last-child {
+  border-bottom: none;
+}
+
+.referral-username {
+  color: white;
+  font-weight: bold;
+}
+
+.referral-profit {
   color: rgb(103, 181, 35);
-  border: none;
-  border-radius: 5px;
-  padding: 8px 15px;
-  font-size: 0.9rem;
-  cursor: pointer;
-  width: 100%;
+  font-weight: bold;
+}
+
+.empty-list {
+  text-align: center;
+  color: #aaa;
+  padding: 20px;
 }
