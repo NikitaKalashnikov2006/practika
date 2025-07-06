@@ -119,50 +119,30 @@ function addPageHandlers() {
 function shareReferralLink() {
   const tg = window.Telegram.WebApp;
   
-  // Проверяем инициализацию WebApp
   if (!tg) {
     console.error('Telegram WebApp не инициализирован');
-    alert('Ошибка: Telegram WebApp не инициализирован');
     return;
   }
 
-  // Проверяем данные пользователя
-  if (!tg.initDataUnsafe || !tg.initDataUnsafe.user) {
-    console.error('Данные пользователя не доступны');
-    alert('Ошибка: данные пользователя не доступны');
-    return;
-  }
-
-  const userId = tg.initDataUnsafe.user.id;
-  const botUsername = 'Business_shop_bot'; // Ваш бот
-  const appName = 'test'; // Название приложения
+  const userId = tg.initDataUnsafe.user?.id || '0';
+  const botUsername = 'Business_shop_bot'; // Ваш username бота
   
-  // Формируем правильную реферальную ссылку для Telegram
-  const referralLink = `https://t.me/${botUsername}?start=ref_${userId}`;
+  // Формируем специальную ссылку для выбора чата
+  const shareUrl = `https://t.me/${botUsername}?startattach=tg:to_chat&text=Присоединяйся%20к%20моему%20проекту!%20Вот%20ссылка:%20https://t.me/${botUsername}?start=ref_${userId}`;
   
-  const message = `🚀 Привет! Присоединяйся к моему проекту и начни зарабатывать!\n\nПерейди по ссылке: ${referralLink}`;
-  
-  console.log('Реферальная ссылка:', referralLink);
+  console.log('Share URL:', shareUrl);
   
   try {
-    // Пытаемся использовать Telegram-специфичные методы
-    if (tg.isVersionAtLeast('6.0') && tg.shareMessage) {
-      tg.shareMessage({
-        text: message,
-        url: referralLink
-      });
-    } else if (tg.openTelegramLink) {
-      // Альтернативный метод для старых версий
-      const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent(message)}`;
+    if (tg.openTelegramLink) {
+      // Открываем интерфейс выбора чата
       tg.openTelegramLink(shareUrl);
     } else {
-      // Если методы Telegram недоступны (например, в тестовой среде)
-      alert(`Ссылка для приглашения:\n${referralLink}\n\nСообщение:\n${message}`);
-      console.log('Telegram методы недоступны, показано fallback-сообщение');
+      // Fallback для старых версий
+      alert('Функция доступна только в Telegram. Используйте эту ссылку:\n' + shareUrl);
     }
   } catch (error) {
-    console.error('Ошибка при отправке приглашения:', error);
-    alert('Произошла ошибка при отправке приглашения. Пожалуйста, попробуйте позже.');
+    console.error('Ошибка при открытии выбора чата:', error);
+    alert('Произошла ошибка. Пожалуйста, попробуйте позже.');
   }
 }
 
