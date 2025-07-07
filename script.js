@@ -126,10 +126,12 @@ function shareReferralLink() {
 
     const userId = tg.initDataUnsafe.user?.id || '0';
     const botUsername = 'Business_shop_bot'; // Ваш бот
+    const appName = 'test';//Имя приложения
+
     
     // Формируем две разные ссылки:
-    const refLink = `https://t.me/${botUsername}?start=ref_${userId}`; // Реферальная ссылка
-    const shareText = `🚀 Присоединяйся к проекту! Перейди: ${refLink}`;
+    const refLink = `https://t.me/${botUsername}/${appName}?startapp=ref_${userId}`; // Реферальная ссылка
+    const shareText = `🚀 Присоединяйся к проекту!`;
     
     // Специальная ссылка для выбора чата
     const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(refLink)}&text=${encodeURIComponent(shareText)}`;
