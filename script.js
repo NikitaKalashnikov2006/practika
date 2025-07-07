@@ -129,6 +129,108 @@ function addPageHandlers() {
       loadPage('lessons');
     });
   }
+
+ // Инициализация TonConnectUI
+        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+            manifestUrl: 'https://nikitakalashnikov2006.github.io/shop/manifest-tonconnect.json',
+            buttonRootId: 'ton-connect',
+            uiOptions: {
+            twaReturnUrl: 'https://t.me/Business_shop_bot/App'
+            }
+        });
+
+        // Элементы DOM
+        const sendBtn = document.getElementById('send-btn');
+        const amountInput = document.getElementById('amount');
+        const amountError = document.getElementById('amount-error');
+
+        // Функция проверки валидности числа
+        function isValidNumber(value) {
+            if (value === '' || value === '.') return false;
+            
+            // Проверяем, что это число и оно больше 0
+            const num = parseFloat(value);
+            return !isNaN(num) && isFinite(num) && num > 0;
+        }
+
+        // Функция обновления состояния кнопки
+        function updateButtonState() {
+            const isConnected = !!tonConnectUI.wallet;
+            const isValid = isValidNumber(amountInput.value);
+            
+            sendBtn.disabled = !isConnected || !isValid;
+        }
+
+        // Обработчик ввода для форматирования и валидации
+        amountInput.addEventListener('input', function(e) {
+            let value = e.target.value;
+            
+            // Форматируем ввод
+            value = value
+                .replace(/[^0-9.,]/g, '') // Удаляем все кроме цифр и .,
+                .replace(/,/g, '.'); // Заменяем запятые на точки
+            
+            // Удаляем лишние точки (оставляем только первую)
+            const parts = value.split('.');
+            if (parts.length > 2) {
+                value = parts[0] + '.' + parts.slice(1).join('');
+            }
+            
+            // Обновляем значение в поле ввода
+            e.target.value = value;
+            
+            // Валидация
+            if (isValidNumber(value)) {
+                amountInput.classList.remove('error');
+                amountError.style.display = 'none';
+            } else {
+                amountInput.classList.add('error');
+                amountError.style.display = 'block';
+            }
+            
+            updateButtonState();
+        });
+
+        // Подписываемся на изменения состояния подключения
+        tonConnectUI.onStatusChange((wallet) => {
+            updateButtonState();
+        });
+
+        // Обработчик клика по кнопке отправки
+        sendBtn.addEventListener('click', async () => {
+            const amount = parseFloat(amountInput.value);
+            
+            // Дополнительная проверка перед отправкой
+            if (!isValidNumber(amountInput.value)) {
+                amountInput.classList.add('error');
+                amountError.style.display = 'block';
+                return;
+            }
+
+            // Конвертируем TON в наноТоны (1 TON = 10^9 наноТонов)
+            const nanotons = Math.round(amount * 1000000000).toString();
+
+            try {
+                const transaction = {
+                    validUntil: Math.floor(Date.now() / 1000) + 300, // 5 минут
+                    messages: [
+                        {
+                            address: "0QD0LFy2lUH2LXI6y9-Xl9Ao6ZkEdgwpd-91V828VVFGrCzG",
+                            amount: nanotons
+                        }
+                    ]
+                };
+
+                await tonConnectUI.sendTransaction(transaction);
+            } catch (error) {
+                console.error('Transaction error:', error);
+            }
+        });
+
+        // Инициализация состояния при загрузке
+        updateButtonState();
+        amountInput.dispatchEvent(new Event('input'));
+
 }
 
 // Новая функция для загрузки уроков
