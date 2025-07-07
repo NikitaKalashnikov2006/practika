@@ -113,6 +113,47 @@ function addPageHandlers() {
 
   // Загрузка списка рефералов
   loadReferralsList();
+
+  // Обработчики для кнопок уроков
+  document.querySelectorAll('.lesson-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const lesson = this.dataset.lesson;
+      loadLesson(lesson + '.html');
+    });
+  });
+
+  // Обработчик кнопки "Назад" в уроках
+  const backBtn = document.querySelector('.back-btn');
+  if (backBtn) {
+    backBtn.addEventListener('click', () => {
+      loadPage('lessons');
+    });
+  }
+}
+
+// Новая функция для загрузки уроков
+async function loadLesson(lessonFile) {
+  try {
+    const response = await fetch(lessonFile);
+    const html = await response.text();
+    const content = document.getElementById("content");
+    
+    content.style.opacity = 0;
+    setTimeout(() => {
+      content.innerHTML = html;
+      content.style.opacity = 1;
+      addPageHandlers(); // Добавляем обработчики снова
+    }, 150);
+    
+  } catch (error) {
+    console.error("Ошибка загрузки урока:", error);
+    document.getElementById("content").innerHTML = `
+      <div class="page">
+        <h2>Ошибка загрузки урока</h2>
+        <p>${error.message}</p>
+      </div>
+    `;
+  }
 }
 
 // Функция для открытия диалога отправки приглашения
