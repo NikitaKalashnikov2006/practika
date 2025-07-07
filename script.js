@@ -77,38 +77,38 @@ function updateActiveButton(page) {
   }
 }
 
-// Инициализация при загрузке
-document.addEventListener("DOMContentLoaded", () => {
-  // Развертываем WebApp на весь экран
-  tg.expand();
-  
-  // Всегда загружаем главную страницу, независимо от хэша в URL
-  loadPage("home");
-  history.replaceState({ page: "home" }, "", "#home");
-
-  // Обработчики для кнопок навигации
-  document.querySelectorAll(".nav-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const page = btn.dataset.page;
-      loadPage(page);
-    });
-  });
-});
-
-// Обработка кнопки "Назад"
-window.addEventListener("popstate", (e) => {
-  if (e.state?.page) {
-    loadPage(e.state.page);
-  }
-});
-
-// Функция для добавления обработчиков элементов страницы
 // Функция для добавления обработчиков элементов страницы
 function addPageHandlers() {
   // Обработчик кнопки "Пригласить друга"
   const inviteBtn = document.getElementById('inviteFriend');
   if (inviteBtn) {
-    inviteBtn.addEventListener('click', shareReferralLink);
+    inviteBtn.addEventListener('click', () => {
+      document.getElementById('inviteModal').style.display = 'flex';
+    });
+  }
+
+  // Обработчики для модального окна
+  const sendInviteBtn = document.getElementById('sendInviteBtn');
+  if (sendInviteBtn) {
+    sendInviteBtn.addEventListener('click', () => {
+      document.getElementById('inviteModal').style.display = 'none';
+      shareReferralLink();
+    });
+  }
+
+  const copyInviteBtn = document.getElementById('copyInviteBtn');
+  if (copyInviteBtn) {
+    copyInviteBtn.addEventListener('click', copyReferralLink);
+  }
+
+  // Закрытие модального окна при клике вне его
+  const modal = document.getElementById('inviteModal');
+  if (modal) {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
   }
 
   // Загрузка списка рефералов
@@ -125,27 +125,100 @@ function shareReferralLink() {
     }
 
     const userId = tg.initDataUnsafe.user?.id || '0';
-    const botUsername = 'Business_shop_bot'; // Ваш бот
-    const appName = 'test';//Имя приложения
-
+    const botUsername = 'Business_shop_bot';
+    const appName = 'test';
     
     // Формируем две разные ссылки:
-    const refLink = `https://t.me/${botUsername}/${appName}?startapp=ref_${userId}`; // Реферальная ссылка
+    const refLink = `https://t.me/${botUsername}/${appName}?startapp=ref_${userId}`;
     const shareText = `🚀 Присоединяйся к проекту!`;
     
     // Специальная ссылка для выбора чата
     const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(refLink)}&text=${encodeURIComponent(shareText)}`;
     
-    console.log('Отправляем ссылку:', shareUrl); // Для отладки
+    console.log('Отправляем ссылку:', shareUrl);
     
     // Основной рабочий метод
     tg.openTelegramLink(shareUrl);
     
   } catch (error) {
     console.error('Ошибка:', error);
-    alert(`Скопируйте ссылку вручную:\nhttps://t.me/${botUsername}?start=ref_${userId}`);
+    tg.showAlert(`Скопируйте ссылку вручную:\nhttps://t.me/${botUsername}?start=ref_${userId}`);
   }
 }
+
+// Функция для копирования реферальной ссылки
+function copyReferralLink() {
+  try {
+    const tg = window.Telegram.WebApp;
+    const userId = tg.initDataUnsafe.user?.id || '0';
+    const botUsername = 'Business_shop_bot';
+    const appName = 'test';
+    const refLink = `https://t.me/${botUsername}/${appName}?startapp=ref_${userId}`;
+    
+    // Используем Clipboard API, если доступен
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(refLink).then(() => {
+        showCopiedNotification();
+      }).catch(err => {
+        console.error('Ошибка копирования:', err);
+        fallbackCopy(refLink);
+      });
+    } else {
+      fallbackCopy(refLink);
+    }
+    
+    document.getElementById('inviteModal').style.display = 'none';
+  } catch (error) {
+    console.error('Ошибка:', error);
+  }
+}
+
+// Фолбэк для копирования, если Clipboard API не доступен
+function fallbackCopy(text) {
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.style.position = 'fixed';
+  document.body.appendChild(textarea);
+  textarea.select();
+  
+  try {
+    document.execCommand('copy');
+    showCopiedNotification();
+  } catch (err) {
+    console.error('Ошибка при копировании:', err);
+  }
+  
+  document.body.removeChild(textarea);
+}
+
+// Функция для показа уведомления "Скопировано!"
+function showCopiedNotification() {
+  const notification = document.createElement('div');
+  notification.textContent = 'Скопировано!';
+  notification.style.position = 'fixed';
+  notification.style.top = '20px';
+  notification.style.left = '50%';
+  notification.style.transform = 'translateX(-50%)';
+  notification.style.backgroundColor = 'rgba(103, 181, 35, 0.9)';
+  notification.style.color = 'black';
+  notification.style.padding = '10px 20px';
+  notification.style.borderRadius = '20px';
+  notification.style.zIndex = '1001';
+  notification.style.fontWeight = 'bold';
+  notification.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+  
+  document.body.appendChild(notification);
+  
+  // Автоматическое скрытие через 2 секунды
+  setTimeout(() => {
+    notification.style.opacity = '0';
+    notification.style.transition = 'opacity 0.5s';
+    setTimeout(() => {
+      document.body.removeChild(notification);
+    }, 500);
+  }, 2000);
+}
+
 
 // Функция для загрузки списка рефералов
 function loadReferralsList() {
@@ -155,7 +228,7 @@ function loadReferralsList() {
   // Здесь должен быть запрос к вашему бэкенду для получения списка рефералов
   // Пример статических данных для демонстрации:
   const referrals = [
-    { username: 'user1', profit: 15.50 },
+    /*{ username: 'user1', profit: 15.50 },
     { username: 'user2', profit: 8.20 },
     { username: 'user3', profit: 3.75 },
     { username: 'user4', profit: 3.75 },
@@ -163,7 +236,8 @@ function loadReferralsList() {
     { username: 'user6', profit: 3.75 },
     { username: 'user7', profit: 3.75 },
     { username: 'user8', profit: 3.75 },
-    { username: 'user9', profit: 3.75 }
+    { username: 'user9', profit: 3.75 },
+    { username: 'user9', profit: 3.75 }*/
   ];
 
   // Очищаем контейнер
@@ -200,3 +274,28 @@ function updateReferralStats(referrals) {
     statItems[1].textContent = totalProfit.toFixed(2);
   }
 }
+
+// Инициализация при загрузке
+document.addEventListener("DOMContentLoaded", () => {
+  // Развертываем WebApp на весь экран
+  tg.expand();
+  
+  // Всегда загружаем главную страницу, независимо от хэша в URL
+  loadPage("home");
+  history.replaceState({ page: "home" }, "", "#home");
+
+  // Обработчики для кнопок навигации
+  document.querySelectorAll(".nav-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const page = btn.dataset.page;
+      loadPage(page);
+    });
+  });
+});
+
+// Обработка кнопки "Назад"
+window.addEventListener("popstate", (e) => {
+  if (e.state?.page) {
+    loadPage(e.state.page);
+  }
+});
