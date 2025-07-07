@@ -395,3 +395,96 @@ nav {
   opacity: 1;
   transition: opacity 0.5s;
 }
+
+/* Стили для списка уроков */
+.lessons-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0 15px;
+  margin-top: 20px;
+}
+
+/* Основные стили кнопок */
+.lesson-btn {
+  background: rgb(103, 181, 35); /* Зелёный фон */
+  border: none;
+  border-radius: 10px;
+  padding: 16px;
+  width: 100%;
+  text-align: left;
+  color: black; /* Чёрный текст для контраста */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  transition: all 0.2s;
+}
+
+/* Номер урока */
+.lesson-number {
+  color: black; /* Чёрный вместо зелёного */
+  font-weight: bold;
+  font-size: 16px;
+  text-decoration: underline;
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* Название урока */
+.lesson-name {
+  font-size: 14px;
+  display: block;
+  color: black; /* Чёрный текст */
+  font-weight: 500; /* Полужирный */
+}
+
+/* Эффекты при взаимодействии */
+.lesson-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.lesson-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  background: rgba(103, 181, 35, 0.9); /* Чуть темнее при нажатии */
+}
+
+.lesson-btn {
+  position: relative; /* Для позиционирования иконки */
+  padding-right: 100px; /* Место для иконки */
+}
+
+.lesson-btn i {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+}
+
+/* Стили для контента урока */
+.lesson-content {
+  padding: 15px;
+}
+
+.lesson-content h2 {
+  color: white;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.lesson-text {
+  color: white;
+  line-height: 1.5;
+}
+
+.back-btn {
+  background: rgb(103, 181, 35);
+  color: black;
+  border: none;
+  border-radius: 10px;
+  padding: 15px;
+  width: 100%;
+  margin-top: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
