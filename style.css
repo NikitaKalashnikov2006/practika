@@ -488,3 +488,57 @@ nav {
   font-weight: bold;
   cursor: pointer;
 }
+
+/*КОШЕЛЁК*/
+
+#ton-connect-container {
+            display: flex;
+            justify-content: flex-end; /* Выравниваем по правому краю */
+            margin-bottom: 20px;
+        }
+        #send-btn {
+            margin-top: 20px;
+            padding: 10px 15px;
+            background: #0088cc;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        #send-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+        .input-group {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        input.error {
+            border-color: red;
+        }
+        #amount-error {
+            color: red;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+        /* Правильные селекторы для отключения уведомлений */
+        [data-tc-actions-modal-container="true"],
+        [data-tc-list-notifications="true"],
+        [data-tc-notification-confirm="true"],
+        [data-tc-notification-tx-sent="true"],
+        [data-tc-notification-tx-cancelled="true"] {
+            display: none !important;
+        }
